@@ -98,16 +98,52 @@ class Model_event extends CI_Model {
         $query = $this->db->get();
         return $query->num_rows();
     }
+    
+    
+    /////////////////////////////////////////////////////////////////////////
+    
+      private function _get_shoping_datatables_query() {
+        $postdata = file_get_contents("php://input");
+        $_POST = json_decode($postdata, 'true');       
+        $type = "";
+        $permalink = array(2, 3);
+        $this->db->select("tic.ticket_id,tic.incident_id,gettype.title as getway_title,ev.event_id,ev.event_invoice,ev.event_text as event_text_evt,SUBSTR(ev.event_text, 1, 30) as event_text_small,ev.event_start_time,ev.event_end_time,ev.event_created_time,ev.event_description,ev.client_id,clnt.client_title,devi.device_name,serv.service_description as service_name,severity.severity,group.title as domain_name,eventsta.event_state,TIMEDIFF(NOW(), ev.event_start_time) as Duration,severity.color_code,ev.is_suppressed,part.client_title as partner_name");
+        $this->db->from('events as ev');
+        $this->db->join('client as part', 'part.id = ev.partner_id');
+        $this->db->join('client as clnt', 'clnt.id = ev.client_id');
+        $this->db->join('devices as devi', 'devi.device_id = ev.device_id');
+        $this->db->join('services as serv', 'serv.service_id = ev.service_id');
+        $this->db->join('severities as severity', 'severity.id = ev.severity_id');
+        $this->db->join('group as group', 'group.id = ev.domain_id');
+        $this->db->join('client_gateways as cgat', 'cgat.id = ev.gateway_id');
+        $this->db->join('gateway_types as gettype', 'gettype.gatewaytype_uuid = cgat.gateway_type');
+        $this->db->join('tickets as tic', 'ev.ticket_id = tic.ticket_id', 'left');
+        $this->db->join('event_states eventsta', 'eventsta.id = ev.event_state_id');
+        $this->db->where_not_in('ev.severity_id', $permalink);  
+        $this->db->where('ev.event_end_time', '0000-00-00 00:00:00');
+    }
 
-    /* Start History Events */
+    public function get_shoping_datatables() {
+        $this->_get_shoping_datatables_query();
+        $limit = 20;        
+        if ($_GET['page'] != -1){
+            $total = $limit*$_GET['page'];
+        }
+        $this->db->limit($limit,$total);
+        $query = $this->db->get();
+        //echo $this->db->last_query();
+        return $query->result();
+    }
 
-    public function count_history_filtered() {
-        $this->_get_history_datatables_query();
+    public function count_shoping_filtered() {
+        $this->_get_datatables_query();
         $query = $this->db->get();
         return $query->num_rows();
     }
+    
+    
 
-    /* End History Events */
+ 
 }
 
 ?>

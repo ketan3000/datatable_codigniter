@@ -13,10 +13,7 @@ class Welcome extends CI_Controller {
         $this->load->helper('url');
     }
 
-    function index() {
-        echo "hiii";
-        exit;
-    }
+ 
 
     public function events() {
        
@@ -46,6 +43,20 @@ class Welcome extends CI_Controller {
             "recordsTotal" => 0,
             "recordsFiltered" => $this->Model_event->count_filtered(),
             "data" => $result,
+        );
+        echo json_encode($output);
+        exit;
+    }
+    
+    
+    public function shoping() {
+       
+        $this->load->model("Model_event");
+        $result = $this->Model_event->get_shoping_datatables();
+
+        $output = array(
+            "totalItems" => $this->Model_event->count_filtered(),
+            "users" => $result,
         );
         echo json_encode($output);
         exit;
