@@ -23,6 +23,14 @@ class Auth extends REST_Controller {
      * URL: http://localhost/CodeIgniter-JWT-Sample/auth/token
      * Method: GET
      */
+    function __construct() {
+        parent::__construct();
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+        header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+        
+    }
+    
     public function token_get() {
         $tokenData = array();
         $tokenData['id'] = 1; //TODO: Replace with data for token
@@ -39,10 +47,8 @@ class Auth extends REST_Controller {
      */
     public function token_post() {
         $headers = $this->input->request_headers();
-
         if (array_key_exists('Authorization', $headers) && !empty($headers['Authorization'])) {
             $decodedToken = AUTHORIZATION::validateToken($headers['Authorization']);
-
             if ($decodedToken != false) {
                 $this->set_response($decodedToken, REST_Controller::HTTP_OK);
                 return;
@@ -57,6 +63,10 @@ class Auth extends REST_Controller {
         $decodedToken = AUTHORIZATION::validateTimestamp($headers['Authorization']);
         //print_r($decodedToken);
         exit;
+    }
+    
+    public function re($param) {
+        
     }
 
 }

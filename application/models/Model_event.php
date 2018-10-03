@@ -18,8 +18,7 @@ class Model_event extends CI_Model {
 
     private function _get_datatables_query() {
         $postdata = file_get_contents("php://input");
-        $_POST = json_decode($postdata, 'true');
-       
+        $_POST = json_decode($postdata, 'true');       
         $type = "";
         $permalink = array(2, 3);
         $this->db->select("tic.ticket_id,tic.incident_id,gettype.title as getway_title,ev.event_id,ev.event_invoice,ev.event_text as event_text_evt,SUBSTR(ev.event_text, 1, 30) as event_text_small,ev.event_start_time,ev.event_end_time,ev.event_created_time,ev.event_description,ev.client_id,clnt.client_title,devi.device_name,serv.service_description as service_name,severity.severity,group.title as domain_name,eventsta.event_state,TIMEDIFF(NOW(), ev.event_start_time) as Duration,severity.color_code,ev.is_suppressed,part.client_title as partner_name");

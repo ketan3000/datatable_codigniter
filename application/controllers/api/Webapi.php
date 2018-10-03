@@ -27,7 +27,7 @@ class Webapi extends REST_Controller {
 
     public function alluser_get() {
        $headers = apache_request_headers();
-       print_r($headers);exit;
+       //print_r($headers);exit;
         $this->db->select('*');
         $this->db->from('users');
         $query = $this->db->get();
